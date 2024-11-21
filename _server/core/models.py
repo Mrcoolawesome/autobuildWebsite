@@ -7,4 +7,5 @@ class UserPost(models.Model):
     title = models.TextField()
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    isPublic = models.BooleanField(default=False)
     

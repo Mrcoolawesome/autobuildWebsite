@@ -28,17 +28,32 @@ def index(req):
 def currentUser(req):
     return JsonResponse({"user": model_to_dict(req.user)})
 
-@login_required
 def posts(req):
-    if req.method == "POST":
+    if req.method == "POST": # if we're writing to the db
         body = json.loads(req.body)
         post = UserPost(
             title=body["title"],
             description=body["description"],
+            isPublic=body["isPublic"],
             user=req.user
         )
         post.save() # save post to database
         return JsonResponse({"post": model_to_dict(post)}) # return the post with the header 'post'
     
-    posts = [model_to_dict(post) for post in req.user.userpost_set.all()] # converting all posts into a json file (it's dumb ik)
-    return JsonResponse({"posts": posts})
+    if req.method == "GET": # if we're reading from the db
+        posts = [] 
+        # converting all posts into a json file (it's dumb ik)
+        for post in req.user.userpost_set.all():
+            if post.isPublic == True:
+                posts.append(model_to_dict(post))
+        return JsonResponse({"posts": posts})
+
+@login_required
+def personalPosts(req, id):
+    if req.method == "GET": # if we're reading from the db
+        posts = [] 
+        # converting all posts into a json file (it's dumb ik)
+        for post in req.user.userpost_set.all():
+            if post.user.id == id:
+                posts.append(model_to_dict(post))
+        return JsonResponse({"posts": posts})

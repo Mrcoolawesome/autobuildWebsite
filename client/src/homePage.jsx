@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react';
-import {useParams, useNavigate} from "react-router-dom"; // these are hooks
 import { Link } from "react-router-dom";
 import { logout } from "./App.jsx"
+import { Posts } from './posts.jsx';
 
-export function HomePage() {
-    const params = useParams();
-	const navigate = useNavigate();
+export function HomePage(props) {
 	return (
 		<>
             <div className='navigation-bar-container'>
@@ -14,13 +11,7 @@ export function HomePage() {
                 <button className='button' onClick={logout}>Logout</button>
                 {/* <Link to={`/user/${user.id}`}> {user.name} </Link> - This is what we're gonna actually use so we get the user's specific data*/}
             </div>
-            <div className='posts-container'>
-                <div className='post'>
-                    I have stuff
-                </div>
-            </div>
-            
-            
+            {Posts(props, false)}
         </>
 	)
 }

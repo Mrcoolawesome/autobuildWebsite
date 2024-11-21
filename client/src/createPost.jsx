@@ -1,35 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {useParams, useNavigate} from "react-router-dom"; // these are hooks
-import { Link } from "react-router-dom";
-import { logout } from "./App.jsx"
 import { parse } from "cookie";
+import { Posts } from './posts.jsx';
 
-export function NewPost() {
+export function NewPost(props) {
     // we need this to dynamically change what notes we see in the front end
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [user, setUser] = useState(null);
-
-    async function getUser(){
-        const res = await fetch('/user/', {
-            credentials: "same-origin",
-        });
-        const body = await res.json();
-        setUser(body.user);
-        setLoading(false);
-    }
-
-    // this is what's intially called when we want to get ALL the posts in the server
-    async function getPosts() {
-        const res = await fetch("/posts/", {
-            credentials: "same-origin"
-        })
-
-        const body = await res.json();
-        setPosts(body.userPosts); // 'userPosts' is what the front end expects django to name the header containing the posts
-    }
+    const [isPublic, setIsPublic] = useState(false);
+    const {posts, setPosts} = props;
 
     async function createPost(e) {
         e.preventDefault();
@@ -40,6 +19,7 @@ export function NewPost() {
             body: JSON.stringify({
                 title, 
                 description, // this comma NEEDS to be here otherwise it won't parse correctly
+                isPublic,
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -47,17 +27,8 @@ export function NewPost() {
             }
         })
         const body = await res.json();
-        if (posts !== undefined) {
-            setPosts([...posts, body.userPost]); // we're assuming django will give us the text of the post with the header 'post'
-        } else {
-            setPosts([body.userPost]);
-        }
-        
+        setPosts([...posts, body.post]); // we're assuming django will give us the text of the post with the header 'post'        
     }
-
-    useEffect(() => {
-        getPosts();
-    }, []); // run once upon startup 
 
     const params = useParams();
 	const navigate = useNavigate();
@@ -73,14 +44,11 @@ export function NewPost() {
                 <input type="text" value={title} onChange={e => setTitle(e.target.value)}/>
                 Description
                 <textarea cols="30" rows="10" value={description} onChange={e => setDescription(e.target.value)}></textarea>
+                Is public
+                <input type="checkbox" className="myCheckbox" onChange={() => setIsPublic(prevIsPublic => !prevIsPublic)}></input>
                 <button>Save</button>
             </form>
-            <div className='posts-container'>
-                {loading && <div>Loading...</div>}
-                <div className='post'>
-                    This will be a post
-                </div>
-            </div>
+            {Posts(props, true)}
         </>
 	)
 }

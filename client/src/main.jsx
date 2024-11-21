@@ -6,31 +6,35 @@ import { HomePage } from './homePage.jsx'
 import {createHashRouter, RouterProvider} from 'react-router-dom'
 import { Profile } from './profile.jsx'
 import { NewPost } from './createPost.jsx'
+import { useState } from 'react';
 
-const router = createHashRouter([ // sort of like urls.py for django
-	{
-		path: "/",
-		element: <App />,
-		children: [
-			{
-				path: "/",
-				element: <HomePage />,
-        children: [
-          
-        ]
-			},
-      {
-        path: "/profile/",
-        element: <Profile />,
-      },
-      {
-        path: "/createPost/",
-        element: <NewPost />,
-      }
-		]
-	},
-]) 
+function Root() { // made our own function so we could use hooks
+	const [posts, setPosts] = useState([]);
+	const router = createHashRouter([ // sort of like urls.py for django
+		{
+			path: "/",
+			element: <App />,
+			children: [
+				{
+					path: "/",
+					element: <HomePage setPosts={setPosts} posts={posts}/>,
+				},
+		  {
+			path: "/profile/",
+			element: <Profile setPosts={setPosts} posts={posts}/>,
+		  },
+		  {
+			path: "/createPost/",
+			element: <NewPost setPosts={setPosts} posts={posts}/>,
+		  }
+			]
+		},
+	]);
+	
+	return <RouterProvider router={router} />; 
+}
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-	<RouterProvider router={router} />,
+	<Root />,
 )

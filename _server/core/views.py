@@ -13,7 +13,6 @@ if not settings.DEBUG:
     MANIFEST = json.load(f)
 
 # Create your views here.
-@login_required
 def index(req):
     context = {
         "asset_url": os.environ.get("ASSET_URL", ""),
@@ -24,9 +23,11 @@ def index(req):
     }
     return render(req, "core/index.html", context)
 
-@login_required
 def currentUser(req):
-    return JsonResponse({"user": model_to_dict(req.user)})
+    if req.user.is_authenticated:
+        return JsonResponse({"user": model_to_dict(req.user)})
+    else:
+        return JsonResponse({"user": "anonymous"})
 
 def posts(req):
     if req.method == "POST": # if we're writing to the db
@@ -41,9 +42,10 @@ def posts(req):
         return JsonResponse({"post": model_to_dict(post)}) # return the post with the header 'post'
     
     if req.method == "GET": # if we're reading from the db
+        
         posts = [] 
         # converting all posts into a json file (it's dumb ik)
-        for post in req.user.userpost_set.all():
+        for post in UserPost.objects.all():
             if post.isPublic == True:
                 posts.append(model_to_dict(post))
         return JsonResponse({"posts": posts})

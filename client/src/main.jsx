@@ -5,7 +5,7 @@ import './index.css'
 import { HomePage } from './homePage.jsx'
 import {createHashRouter, RouterProvider} from 'react-router-dom'
 import { Profile } from './profile.jsx'
-import { CreatePost } from './createPost.jsx'
+import { NewPost } from './createPost.jsx'
 
 const router = createHashRouter([ // sort of like urls.py for django
 	{
@@ -25,7 +25,7 @@ const router = createHashRouter([ // sort of like urls.py for django
       },
       {
         path: "/createPost/",
-        element: <CreatePost />,
+        element: <NewPost />,
       }
 		]
 	},

@@ -31,23 +31,28 @@ def currentUser(req):
 
 def posts(req):
     if req.method == "POST": # if we're writing to the db
-        body = json.loads(req.body)
+        
         post = UserPost(
-            title=body["title"],
-            description=body["description"],
-            isPublic=body["isPublic"],
-            user=req.user
+            title=req.POST.get('title'),
+            description=req.POST.get("description"),
+            isPublic=req.POST.get("isPublic") == "true",
+            user=req.user,
+            thumbnail=req.FILES.get("thumbnail")
         )
         post.save() # save post to database
-        return JsonResponse({"post": model_to_dict(post)}) # return the post with the header 'post'
-    
+        post_dict = model_to_dict(post)
+        post_dict['thumbnail'] = post.thumbnail.url  # Get the URL for the thumbnail image
+
+        return JsonResponse({"post": post_dict})  # return the post with the thumbnail URL
+        
     if req.method == "GET": # if we're reading from the db
         
         posts = [] 
         # converting all posts into a json file (it's dumb ik)
-        for post in UserPost.objects.all():
-            if post.isPublic == True:
-                posts.append(model_to_dict(post))
+        for post in UserPost.objects.filter(isPublic=True):
+            post_dict = model_to_dict(post)  # Convert the post to a dictionary
+            post_dict['thumbnail'] = post.thumbnail.url  # Get the URL of the thumbnail
+            posts.append(post_dict)
         return JsonResponse({"posts": posts})
 
 @login_required
@@ -57,5 +62,16 @@ def personalPosts(req, id):
         # converting all posts into a json file (it's dumb ik)
         for post in req.user.userpost_set.all():
             if post.user.id == id:
-                posts.append(model_to_dict(post))
+                post_dict = model_to_dict(post)  # Convert the post to a dictionary
+                post_dict['thumbnail'] = post.thumbnail.url  # Get the URL of the thumbnail
+                posts.append(post_dict)
+                
         return JsonResponse({"posts": posts})
+    
+def getPost(req, id):
+    if req.method == "GET": # if we're reading from the db
+        # converting all posts into a json file (it's dumb ik)
+        post = UserPost.objects.get(id=id)
+        post_dict = model_to_dict(post)
+        post_dict['thumbnail'] = post.thumbnail.url  # Get the URL of the thumbnail
+        return JsonResponse({"post": post_dict})

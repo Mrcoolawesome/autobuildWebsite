@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 
 export function Posts(props, personalPosts) {
     const [loading, setLoading] = useState(true);
@@ -42,10 +43,12 @@ export function Posts(props, personalPosts) {
         <div className='posts-container'>
             {loading && <div>Loading...</div>}
             {posts.map(post => (
-                <div className='post' key={post.id}>
-                    <h2>{post.title}</h2>
-                    {post.description}
-                </div>
+                <Link to={`/post/${post.id}`} key={post.id}>
+                    <div className='post'>
+                        <h2>{post.title}</h2>
+                        {post.description}
+                    </div>
+                </Link>
             ))}
         </div>
 	)

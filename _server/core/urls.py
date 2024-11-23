@@ -12,16 +12,4 @@ urlpatterns = [
     path('posts/<int:id>/', view=views.personalPosts, name="user posts"),
     path('posts/undefined/', view=views.personalPosts, name="dummy url"),
     path('post/<int:id>/', view=views.getPost, name="individual post"),
-    # path('thumbnails/<path:path>/', serve, {'document_root': settings.MEDIA_ROOT}),
-] #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # THIS DOESN'T WORK FOR PRODUCTION
-
-if settings.DEBUG:
-    urlpatterns += [
-        re_path(
-            r"^thumbnails/(?P<path>.*)$",
-            serve,
-            {
-                "document_root": settings.MEDIA_ROOT,
-            },
-        ),
-    ]
+] 

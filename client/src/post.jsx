@@ -29,8 +29,8 @@ export function IndividualPost() {
                 <div className="vehicle-view">
                     <Canvas>
                         <Stats />
-                        <ambientLight intensity={Math.PI / 2} />
-                        <Environment preset="city" />
+                        <ambientLight intensity={1} />
+                        <Environment preset="warehouse" />
                         <OrbitControls minDistance={50} maxPolarAngle={90}/>
                         {post && post.vehicle && <RenderVehicle vehicle={post.vehicle} />}
                     </Canvas>

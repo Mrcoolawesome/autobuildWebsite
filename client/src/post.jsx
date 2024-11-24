@@ -1,6 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { RenderVehicle } from './carPreview';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls } from "@react-three/drei";
+import { Environment } from '@react-three/drei';
 
 export function IndividualPost() {
     const { id } = useParams();
@@ -12,12 +15,12 @@ export function IndividualPost() {
         });
         const body = await res.json();
         setPost(body.post);
-        console.log(body.post.vehicle.vertices[0].x); // this is an object, with an array of vertex objects within it's 'vertices' attribute
     }
 
     useEffect(() => {
         getPost();
     }, []); // run once upon startup 
+
 
     return (
         <div className='post-container'>
@@ -26,7 +29,12 @@ export function IndividualPost() {
                 {post.description}
                 <img src={post.thumbnail} alt="Thumbnail" className='thumbnail'/>
                 <div className="vehicle-view">
-                    {RenderVehicle()}
+                    <Canvas>
+                        <ambientLight intensity={Math.PI / 2} />
+                        <Environment preset="city" />
+                        <OrbitControls minDistance={50} maxPolarAngle={90}/>
+                        {post && post.vehicle && <RenderVehicle vehicle={post.vehicle} />}
+                    </Canvas>
                 </div>
             </div>
         </div>

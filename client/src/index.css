@@ -77,3 +77,8 @@ body {
   width: 200px;
   height: auto; /* Maintains aspect ratio */
 }
+
+.vehicle-view {
+  width: 500px;
+  height: 500px;
+}

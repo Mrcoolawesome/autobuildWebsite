@@ -1,114 +1,52 @@
-import * as THREE from 'three';
-import { useEffect, useState, useRef, useLayoutEffect } from 'react';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import React, { useRef, useState } from 'react'
+import { useFrame } from '@react-three/fiber';
+import { Color } from 'three';
 
-export function RenderVehicle(vehicle) {
-    const [scene, setScene] = useState(null);
-    const [camera, setCamera] = useState(null);
-    const [controls, setControls] = useState(null); 
-    const canvasRef = useRef(null);
-    const [renderer, setRenderer] = useState(null);
+export function RenderVehicle({vehicle}) {
+    // This reference gives us direct access to the THREE.Mesh object
+    //body.post.vehicle.vertices[0].x
+    const ref = useRef();
 
-    function createScene() {
-        const scene = new THREE.Scene();
-        const light = new THREE.AmbientLight(0xFFFFFF, 100);
-        light.position.set(1, 1, 1).normalize();
-        scene.add(light);
-        setScene(scene);
+    function createCubes() {
+        return vehicle.locations.map((location, index) => {
+            const z = location / (40 * 100) - 20; // subtract half the max editor size in the z direction
+            const remaining = location % (40 * 100);
+            const x = (remaining / 40) - 50; // subtract half the max editor size in the x direction
+            const y = (remaining % 40) - 20; // subtract half the max editor size in the y direction
+            return (
+                <mesh
+                    key={location}
+                    position={[x, z, y]}
+                    ref={ref}
+                >
+                        <boxGeometry args={[1, 1, 1]} />
+                        <meshStandardMaterial 
+                            color={new Color(vehicle.colors[index].r, vehicle.colors[index].g, vehicle.colors[index].b)}
+                            transparent={vehicle.colors[index].a < 1}
+                            opacity={vehicle.colors[index].a}
+                        />
+                </mesh>
+            );
+        });
     }
 
-    function createCamera() {
-        const width = 800;
-        const height = 800;
-        const camera = new THREE.PerspectiveCamera(75, width / height);
-        camera.position.set(0, 10, 20);
-        setCamera(camera);
-        scene.add(camera);
-        setScene(scene);
-    }
-
-    function addCube() {
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.x = 0;
-        cube.position.y = 0;
-        cube.position.z = 0;
-        scene.add(cube);
-    }
-
-    function createRenderer() {
-        const canvas = canvasRef.current;
-        const renderer = new THREE.WebGLRenderer({ canvas });
-        renderer.render(scene, camera);
-        setRenderer(renderer);
-    }
-
-    function render() {
-        if (renderer && scene && camera) {
-            renderer.render(scene, camera);
-            setRenderer(renderer);
-        }
-    }
-
-    // Start the animation loop
-    function animate() {
-        // console.log("running");
-        if (scene && camera && controls !== null) {
-            controls.update();
-            setControls(controls); // update the state of the controls
-            // render();
-        }
-        requestAnimationFrame(() => {
-            render();
-            animate();
-            // console.log("running");
-        });  // Request the next frame
-    }
-
-    // Set up controls once camera and scene are ready
-    useEffect(() => {
-        if (scene && camera && controls === null) {
-            const canvas = canvasRef.current;
-            const control = new OrbitControls(camera, canvas);
-            control.target.set(0, 0, 0);
-            control.update();
-            setControls(control);
-            console.log(controls);
-        }
-    }, [scene, camera]); // Avoid repeated control setup
-
-    useEffect(() => {
-        createScene();  // Create the scene when the component mounts
-        if (scene && camera) ;
-    }, []); // Empty dependency array ensures this runs once
-
-    useEffect(() => {
-        if (scene) {
-            createCamera();  // Create the camera when the scene is available
-        }
-    }, [scene]); // Runs whenever `scene` changes
-
-    useEffect(() => {
-        if (scene && camera) {
-            addCube();   // Add the cube to the scene when both scene and camera are available
-            animate();    // Start rendering the scene
-        }
-    }, [scene, camera]);  // Runs whenever `scene` or `camera` changes
-
-    useEffect(() => {
-        if (scene && camera && controls && renderer === null) {
-            createRenderer();
-        }
-        if (scene && camera) {
-            animate();    // Start rendering the scene
-        }
-    }, [camera, scene, controls, renderer]);  // Runs whenever `scene` or `camera` changes
-
+    // Subscribe this component to the render-loop, rotate the mesh every frame
+    // useFrame((state, delta) => (ref.current.rotation.y += delta));
+    // Return the view, these are regular Threejs elements expressed in JSX
     return (
-        <canvas
-            ref={canvasRef}
-            style={{ width: '800px', height: '600px', display: 'block', margin: 'auto' }}
-        />
+        <>
+        <mesh
+                    key={location}
+                    position={[0, 0, 0]}
+                    ref={ref}
+                >
+                        <boxGeometry args={[1, 1, 1]} />
+                        <meshStandardMaterial 
+                            color={"red"}
+                        />
+                </mesh>
+            {createCubes()}
+        </>
     );
 }
+

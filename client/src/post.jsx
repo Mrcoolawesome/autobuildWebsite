@@ -2,8 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { RenderVehicle } from './carPreview';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls } from "@react-three/drei";
-import { Environment } from '@react-three/drei';
+import { Environment, Stats, OrbitControls } from '@react-three/drei';
 
 export function IndividualPost() {
     const { id } = useParams();
@@ -21,7 +20,6 @@ export function IndividualPost() {
         getPost();
     }, []); // run once upon startup 
 
-
     return (
         <div className='post-container'>
             <div className='post' key={post.id}>
@@ -30,6 +28,7 @@ export function IndividualPost() {
                 <img src={post.thumbnail} alt="Thumbnail" className='thumbnail'/>
                 <div className="vehicle-view">
                     <Canvas>
+                        <Stats />
                         <ambientLight intensity={Math.PI / 2} />
                         <Environment preset="city" />
                         <OrbitControls minDistance={50} maxPolarAngle={90}/>

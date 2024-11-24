@@ -72,3 +72,8 @@ body {
 .post:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+.thumbnail {
+  width: 200px;
+  height: auto; /* Maintains aspect ratio */
+}

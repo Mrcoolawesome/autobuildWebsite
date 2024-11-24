@@ -31,13 +31,13 @@ def currentUser(req):
 
 def posts(req):
     if req.method == "POST": # if we're writing to the db
-        
         post = UserPost(
             title=req.POST.get('title'),
             description=req.POST.get("description"),
             isPublic=req.POST.get("isPublic") == "true",
             user=req.user,
-            thumbnail=req.FILES.get("thumbnail")
+            thumbnail=req.FILES.get("thumbnail"),
+            vehicle=json.loads(req.POST.get("vehicle")),
         )
         post.save() # save post to database
         post_dict = model_to_dict(post)
@@ -46,7 +46,6 @@ def posts(req):
         return JsonResponse({"post": post_dict})  # return the post with the thumbnail URL
         
     if req.method == "GET": # if we're reading from the db
-        
         posts = [] 
         # converting all posts into a json file (it's dumb ik)
         for post in UserPost.objects.filter(isPublic=True):

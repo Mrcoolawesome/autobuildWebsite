@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import {useParams, useNavigate} from "react-router-dom"; // these are hooks
+import { useNavigate } from "react-router-dom"; // these are hooks
 import { parse } from "cookie";
-import { Posts } from './posts.jsx';
 
 export function NewPost(props) {
     // we need this to dynamically change what notes we see in the front end
@@ -10,6 +9,7 @@ export function NewPost(props) {
     const [isPublic, setIsPublic] = useState(false);
     const {posts, setPosts} = props;
     const [thumbnail, setThumbnail] = useState(null);
+    const [vehicle, setVehicle] = useState("");
 
     async function createPost(e) {
         e.preventDefault();
@@ -18,6 +18,7 @@ export function NewPost(props) {
         formData.append('description', description);
         formData.append('isPublic', isPublic);
         formData.append('thumbnail', thumbnail); // Add the image file
+        formData.append('vehicle', JSON.stringify(vehicle));
 
         const res = await fetch('/posts/', {
             method: 'post',
@@ -33,7 +34,6 @@ export function NewPost(props) {
         setPosts([...posts, body.post]); // we're assuming django will give us the text of the post with the header 'post'        
     }
 
-    const params = useParams();
 	const navigate = useNavigate();
 	return (
 		<>
@@ -46,14 +46,23 @@ export function NewPost(props) {
                 Build Name
                 <input type="text" value={title} onChange={e => setTitle(e.target.value)}/>
                 Thumbnail
-                <input type="file" accept="image/*" onChange={e => setThumbnail(e.target.files[0])}></input> {/* accepts png, jpg, and gifs according to chatgpt*/}
+                <input type="file" accept="image/*" onChange={e => setThumbnail(e.target.files[0])}></input>
+                Vehicle
+                <input type="file" accept=".json" onChange={e => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.readAsText(file);
+                    reader.onload = (event) => {
+                        const jsonContents = JSON.parse(event.target.result);
+                        setVehicle(jsonContents);
+                    }
+                }}></input>
                 Description
                 <textarea cols="30" rows="10" value={description} onChange={e => setDescription(e.target.value)}></textarea>
                 Is public
                 <input type="checkbox" className="myCheckbox" onChange={() => setIsPublic(prevIsPublic => !prevIsPublic)}></input>
                 <button>Save</button>
             </form>
-            {Posts(props, true)}
         </>
 	)
 }

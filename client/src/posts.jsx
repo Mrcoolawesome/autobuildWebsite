@@ -47,6 +47,7 @@ export function Posts(props, personalPosts) {
                     <div className='post'>
                         <h2>{post.title}</h2>
                         {post.description}
+                        <img src={post.thumbnail} alt="Thumbnail" className='thumbnail'/>
                     </div>
                 </Link>
             ))}

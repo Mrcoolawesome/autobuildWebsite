@@ -7,13 +7,14 @@ export function NewPost(props) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [isPublic, setIsPublic] = useState(false);
-    const {posts, setPosts} = props;
+    const {posts, setPosts, loggedIn, setLoggedIn} = props;
     const [thumbnail, setThumbnail] = useState(null);
     const [vehicle, setVehicle] = useState("");
     const isPersonalPost = props.personalPost;
     const { id } = useParams();
 
     async function createPost(e) {
+        checkedSignedIn();
         e.preventDefault();
         const formData = new FormData();
         formData.append('title', title);
@@ -47,9 +48,7 @@ export function NewPost(props) {
     }
 
     async function getPost() {
-        if (id === undefined && isPersonalPost) {
-            window.location = '/registration/sign_in/';
-        }
+        checkedSignedIn();
         const res = await fetch(`/post/${id}/`, {
             credentials: "same-origin"
         })
@@ -59,6 +58,12 @@ export function NewPost(props) {
         setTitle(post.title); // 'userPosts' is what the front end expects django to name the header containing the posts
         setDescription(post.description);
         setIsPublic(post.isPublic);
+    }
+
+    function checkedSignedIn() {
+        if (!loggedIn) {
+            window.location = '/registration/sign_in/';
+        }
     }
 
     useEffect(() => {

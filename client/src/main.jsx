@@ -11,6 +11,8 @@ import { IndividualPost } from './post.jsx';
 
 function Root() { // made our own function so we could use hooks
 	const [posts, setPosts] = useState([]);
+	const [loggedIn, setLoggedIn] = useState(false);
+
 	const router = createHashRouter([ // sort of like urls.py for django
 		{
 			path: "/",
@@ -18,7 +20,7 @@ function Root() { // made our own function so we could use hooks
 			children: [
 				{
 					path: "/",
-					element: <HomePage setPosts={setPosts} posts={posts}/>,
+					element: <HomePage setPosts={setPosts} posts={posts} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>,
 				},
 		  {
 			path: "/profile/",
@@ -26,7 +28,7 @@ function Root() { // made our own function so we could use hooks
 		  },
 		  {
 			path: "/createPost/",
-			element: <NewPost setPosts={setPosts} posts={posts} />,
+			element: <NewPost setPosts={setPosts} posts={posts} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />,
 		  },
 		  {
 			path: "/post/:id",

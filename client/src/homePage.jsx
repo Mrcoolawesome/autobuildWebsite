@@ -3,7 +3,7 @@ import { Posts } from './posts.jsx';
 import { useEffect, useState } from 'react';
 
 export function HomePage(props) {
-    const [loggedIn, setLoggedIn] = useState(false);
+    const {loggedIn, setLoggedIn} = props;
 
     async function isLoggedIn() {
         const res = await fetch('/user/', {

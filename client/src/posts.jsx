@@ -43,7 +43,7 @@ export function Posts(props, personalPosts) {
         <div className='posts-container'>
             {loading && <div>Loading...</div>}
             {posts.map(post => (
-                <Link to={`/post/${post.id}`} key={post.id}>
+                <Link to={personalPosts ? `/post/edit/${post.id}` : `/post/${post.id}`} key={post.id}>
                     <div className='post'>
                         <h2>{post.title}</h2>
                         {post.description}

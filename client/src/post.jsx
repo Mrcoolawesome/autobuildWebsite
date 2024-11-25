@@ -21,21 +21,19 @@ export function IndividualPost() {
     }, []); // run once upon startup 
 
     return (
-        <div className='post-container'>
-            <div className='post' key={post.id}>
-                <h2>{post.title}</h2>
-                {post.description}
-                <img src={post.thumbnail} alt="Thumbnail" className='thumbnail'/>
-                <div className="vehicle-view">
-                    <Canvas>
-                        <Stats />
-                        <ambientLight intensity={1} />
-                        <Environment preset="warehouse" />
-                        <OrbitControls minDistance={50} maxPolarAngle={90}/>
-                        {post && post.vehicle && <RenderVehicle vehicle={post.vehicle} />}
-                    </Canvas>
-                </div>
+        <div className='single-post' key={post.id}>
+            <h2>{post.title}</h2>
+            <p>{post.description}</p>
+            <div className="vehicle-view">
+                <Canvas>
+                    <Stats />
+                    <ambientLight intensity={1} />
+                    <Environment preset="warehouse" />
+                    <OrbitControls minDistance={50} maxPolarAngle={90}/>
+                    {post && post.vehicle && <RenderVehicle vehicle={post.vehicle} />}
+                </Canvas>
             </div>
         </div>
-	)
+    )
+    
 }

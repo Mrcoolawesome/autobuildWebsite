@@ -12,4 +12,5 @@ urlpatterns = [
     path('posts/<int:id>/', view=views.personalPosts, name="user posts"),
     path('posts/undefined/', view=views.personalPosts, name="dummy url"),
     path('post/<int:id>/', view=views.getPost, name="individual post"),
+    path('post/edit/<int:id>/', view=views.updatePost, name="update post"),
 ] 

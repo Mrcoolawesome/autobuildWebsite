@@ -69,8 +69,26 @@ def personalPosts(req, id):
     
 def getPost(req, id):
     if req.method == "GET": # if we're reading from the db
-        # converting all posts into a json file (it's dumb ik)
         post = UserPost.objects.get(id=id)
+        # converting all posts into a json file (it's dumb ik)
         post_dict = model_to_dict(post)
         post_dict['thumbnail'] = post.thumbnail.url  # Get the URL of the thumbnail
         return JsonResponse({"post": post_dict})
+    
+@login_required    
+def updatePost(req, id):
+    if req.method == "POST":  # If we want to update the post
+        post = UserPost.objects.get(id=id)
+        # Update the post fields (you can add validation as needed)
+        post.title = req.POST.get('title', post.title)
+        post.description = req.POST.get('description', post.description)
+        post.isPublic = req.POST.get("isPublic") == "true"
+        post.user = req.user
+        if req.FILES.get("thumbnail"):
+            post.thumbnail = req.FILES.get("thumbnail")
+        if req.POST.get("vehicle"):
+            post.vehicle = json.loads(req.POST.get("vehicle"))
+
+        post.save()  # Save the updated post back to the database
+        
+        return JsonResponse({"message": "Post updated successfully"}, status=200)

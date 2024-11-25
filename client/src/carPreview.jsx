@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { InstancedMesh, Matrix4, Color } from 'three';
-import { Wireframe } from '@react-three/drei';
+import { Matrix4, Color } from 'three';
 
 export function RenderVehicle({ vehicle }) {
     const meshRef = useRef();
@@ -54,6 +53,7 @@ export function RenderVehicle({ vehicle }) {
             <boxGeometry args={[1, 1, 1]} />
             {/* Material for instances */}
             <meshStandardMaterial />
+            {/* <Wireframe/> */}
         </instancedMesh>
     );
 }

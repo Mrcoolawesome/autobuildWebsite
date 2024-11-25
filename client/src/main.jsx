@@ -26,11 +26,15 @@ function Root() { // made our own function so we could use hooks
 		  },
 		  {
 			path: "/createPost/",
-			element: <NewPost setPosts={setPosts} posts={posts}/>,
+			element: <NewPost setPosts={setPosts} posts={posts} />,
 		  },
 		  {
 			path: "/post/:id",
-			element: <IndividualPost />,
+			element: <IndividualPost personalPost={false} />,
+		  },
+		  {
+			path: "/post/edit/:id",
+			element: <NewPost setPosts={setPosts} posts={posts} personalPost={true} />,
 		  }
 			]
 		},

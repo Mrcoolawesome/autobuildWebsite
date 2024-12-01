@@ -7,6 +7,7 @@ import { Profile } from './profile.jsx';
 import { NewPost } from './createPost.jsx';
 import { useState } from 'react';
 import { IndividualPost } from './post.jsx';
+import { LogoutFailed } from './loggingIn.jsx';
 
 function Root() { // made our own function so we could use hooks
 	const [posts, setPosts] = useState([]);
@@ -35,6 +36,10 @@ function Root() { // made our own function so we could use hooks
 				{
 					path: "/post/edit/:id",
 					element: <NewPost setPosts={setPosts} posts={posts} personalPost={true} />,
+				},
+				{
+					path: "/logoutFailed/",
+					element: <LogoutFailed />
 				}
 			]
 		},

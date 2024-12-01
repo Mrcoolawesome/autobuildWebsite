@@ -25,7 +25,7 @@ export function RenderVehicle({ vehicle }) {
                 const y = (remaining % 40) - 20;
 
                 // Set position using matrix
-                tempMatrix.setPosition(x, z, y);
+                tempMatrix.setPosition(x, z + 5, y);
                 meshRef.current.setMatrixAt(i, tempMatrix);
 
                 // Set color

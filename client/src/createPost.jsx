@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom"; // these are hooks
 import { parse } from "cookie";
-import { isLoggedIn } from './getLoggedIn';
+import { isLoggedIn } from './loggingIn';
 
 // will create a form that a user can submit to create a new post
 export function NewPost(props) {

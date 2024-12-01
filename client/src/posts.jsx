@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 
+// function that displays all posts given if they're personal or public posts
 export function Posts(props, personalPosts) {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
     const {posts, setPosts} = props;
 
+    // get the user from the db
     async function getUser() {
         const res = await fetch('/user/', {
             credentials: "same-origin",
@@ -20,7 +22,7 @@ export function Posts(props, personalPosts) {
         if (user.id === undefined && personalPosts) {
             window.location = '/registration/sign_in/';
         }
-        const postUrl = personalPosts ? `/posts/${user.id}` : '/posts/';
+        const postUrl = personalPosts ? `/posts/${user.id}` : '/posts/'; // send to different viewpoint given if we're looking at personal posts or not
         const res = await fetch(postUrl, {
             credentials: "same-origin"
         })
@@ -35,7 +37,7 @@ export function Posts(props, personalPosts) {
 
     useEffect(() => {
         if (loading === false) {
-            getPosts();
+            getPosts(); // get the posts once we know who the user is
         }
     }, [user]);
 

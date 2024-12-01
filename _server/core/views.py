@@ -12,7 +12,6 @@ if not settings.DEBUG:
     f = open(f"{settings.BASE_DIR}/core/static/manifest.json")
     MANIFEST = json.load(f)
 
-# Create your views here.
 def index(req):
     context = {
         "asset_url": os.environ.get("ASSET_URL", ""),
@@ -23,12 +22,14 @@ def index(req):
     }
     return render(req, "core/index.html", context)
 
+# get the user, if they're not signed in, mark them as 'anonymous'
 def currentUser(req):
     if req.user.is_authenticated:
         return JsonResponse({"user": model_to_dict(req.user)})
     else:
         return JsonResponse({"user": "anonymous"})
 
+# saves new posts to the db or returns posts
 def posts(req):
     if req.method == "POST": # if we're writing to the db
         post = UserPost(
@@ -49,11 +50,12 @@ def posts(req):
         posts = [] 
         # converting all posts into a json file (it's dumb ik)
         for post in UserPost.objects.filter(isPublic=True):
-            post_dict = model_to_dict(post)  # Convert the post to a dictionary
-            post_dict['thumbnail'] = post.thumbnail.url  # Get the URL of the thumbnail
+            post_dict = model_to_dict(post)  
+            post_dict['thumbnail'] = post.thumbnail.url 
             posts.append(post_dict)
         return JsonResponse({"posts": posts})
 
+# gets the personal posts from the db
 @login_required
 def personalPosts(req, id):
     if req.method == "GET": # if we're reading from the db
@@ -61,20 +63,22 @@ def personalPosts(req, id):
         # converting all posts into a json file (it's dumb ik)
         for post in req.user.userpost_set.all():
             if post.user.id == id:
-                post_dict = model_to_dict(post)  # Convert the post to a dictionary
-                post_dict['thumbnail'] = post.thumbnail.url  # Get the URL of the thumbnail
+                post_dict = model_to_dict(post)
+                post_dict['thumbnail'] = post.thumbnail.url 
                 posts.append(post_dict)
                 
         return JsonResponse({"posts": posts})
-    
+
+# gets a single posts' information
 def getPost(req, id):
     if req.method == "GET": # if we're reading from the db
         post = UserPost.objects.get(id=id)
         # converting all posts into a json file (it's dumb ik)
         post_dict = model_to_dict(post)
-        post_dict['thumbnail'] = post.thumbnail.url  # Get the URL of the thumbnail
+        post_dict['thumbnail'] = post.thumbnail.url  
         return JsonResponse({"post": post_dict})
-    
+
+# for editing a post
 @login_required    
 def updatePost(req, id):
     if req.method == "POST":  # If we want to update the post
@@ -84,9 +88,9 @@ def updatePost(req, id):
         post.description = req.POST.get('description', post.description)
         post.isPublic = req.POST.get("isPublic") == "true"
         post.user = req.user
-        if req.FILES.get("thumbnail"):
+        if req.FILES.get("thumbnail"): # make sure the user actually changed the thumbnail
             post.thumbnail = req.FILES.get("thumbnail")
-        if req.POST.get("vehicle"):
+        if req.POST.get("vehicle"): # make sure the user actually changed the vehicle
             post.vehicle = json.loads(req.POST.get("vehicle"))
 
         post.save()  # Save the updated post back to the database

@@ -1,38 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom"; // these are hooks
 import { parse } from "cookie";
+import { isLoggedIn } from './getLoggedIn';
 
+// will create a form that a user can submit to create a new post
 export function NewPost(props) {
-    // we need this to dynamically change what notes we see in the front end
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [isPublic, setIsPublic] = useState(false);
-    const {posts, setPosts, loggedIn, setLoggedIn} = props;
+    const {posts, setPosts} = props; // this is where we get if the user is logged in or not
     const [thumbnail, setThumbnail] = useState(null);
     const [vehicle, setVehicle] = useState("");
     const isPersonalPost = props.personalPost;
     const { id } = useParams();
 
+    // this is what sends the post to the db
     async function createPost(e) {
-        checkedSignedIn();
-        e.preventDefault();
-        const formData = new FormData();
+        checkSignedIn(); // making sure they're still signed in
+        e.preventDefault(); // don't reload page
+        const formData = new FormData(); // different way of sending form data, allows for sending images
         formData.append('title', title);
         formData.append('description', description);
         formData.append('isPublic', isPublic);
         if (thumbnail) formData.append('thumbnail', thumbnail); // Add the image file
         if (vehicle) formData.append('vehicle', JSON.stringify(vehicle));
 
+        // if it's a personal post, then we're editing that post, so send it to the edit endpoint
+        // otherwise send it to the regular '/posts/' endpoint if they're creating a whole new post
         const res = await fetch(isPersonalPost ? `/post/edit/${id}/` : '/posts/', {
             method: 'post',
             credentials: "same-origin",
             body: formData, // Send the FormData
             headers: {
-                // "Content-Type": "application/json",
-                "X-CSRFToken": parse(document.cookie).csrftoken
+                "X-CSRFToken": parse(document.cookie).csrftoken,
             }
         });
         
+        // only show the posts for the current user if they're looking at their personal posts
         const body = await res.json();
         if (isPersonalPost) {
             const newPosts = posts.filter((post) => {
@@ -44,11 +48,12 @@ export function NewPost(props) {
         } else {
             setPosts([...posts, body.post]); // we're assuming django will give us the text of the post with the header 'post' 
         } 
-        navigate('/profile/');
+        navigate('/profile/'); // send them back to the main profile page
     }
 
+    // if we're editing a post, we need to get it first to display it
     async function getPost() {
-        checkedSignedIn();
+        checkSignedIn(); // making sure they're still signed in
         const res = await fetch(`/post/${id}/`, {
             credentials: "same-origin"
         })
@@ -60,19 +65,21 @@ export function NewPost(props) {
         setIsPublic(post.isPublic);
     }
 
-    function checkedSignedIn() {
-        if (!loggedIn) {
+    // send the user to the sign in page if they're not already signed in
+    function checkSignedIn() {
+        if (!isLoggedIn) {
             window.location = '/registration/sign_in/';
         }
     }
 
     useEffect(() => {
         if (isPersonalPost && id) {
+            checkSignedIn(); // check if the user is signed in before allowing them to create a post
             getPost();
         }
     }, []); // run once upon startup 
 
-	const navigate = useNavigate();
+    const navigate = useNavigate();
 	return (
 		<>
             <div className='navigation-bar-container'>

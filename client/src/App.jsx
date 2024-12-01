@@ -4,7 +4,7 @@ import './App.css';
 function App() {
   return (
     <>
-			<Outlet />{/* This is our page */}
+			<Outlet />
     </>
   )
 }

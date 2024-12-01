@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Matrix4, Color } from 'three';
 
+// this function was mostly written by me, then i had ChatGPT rewrite it to use instanced meshes to optimize the rendering
 export function RenderVehicle({ vehicle }) {
     const meshRef = useRef();
     const [mouseDown, setMouseDown] = useState(false);
@@ -14,8 +15,9 @@ export function RenderVehicle({ vehicle }) {
 
     // Create the `InstancedMesh` on the first render
     useEffect(() => {
-        if (meshRef.current) {
+        if (meshRef.current) { // check if the mesh exists (it might not due to how useEffect works)
             for (let i = 0; i < count; i++) {
+                // this is the 'location' number given by the json file, some parsing needs to be done to extract the xyz coordinates from this number
                 const location = vehicle.locations[i];
                 const z = location / (40 * 100) - 20;
                 const remaining = location % (40 * 100);
@@ -37,7 +39,7 @@ export function RenderVehicle({ vehicle }) {
         }
     }, [count, vehicle.locations, vehicle.colors]);
 
-    // Optionally animate the instances (e.g., rotation)
+    // rotate the car unless the user begins to rotate it themselves 
     useFrame(() => {
         if (meshRef.current && !mouseDown) {
             meshRef.current.rotation.y += 0.01;

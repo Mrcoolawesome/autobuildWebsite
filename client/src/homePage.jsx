@@ -1,20 +1,12 @@
 import { Link } from "react-router-dom";
 import { Posts } from './posts.jsx';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { isLoggedIn } from "./getLoggedIn.jsx";
 
+// displays the homepage with all of the public posts
 export function HomePage(props) {
-    const {loggedIn, setLoggedIn} = props;
 
-    async function isLoggedIn() {
-        const res = await fetch('/user/', {
-            credentials: "same-origin",
-        });
-        const body = await res.json();
-        const user = body.user;
-        console.log(user);
-        user === "anonymous" ? setLoggedIn(false) : setLoggedIn(true);
-    }
-
+    // this will send the user to the sign in page
     async function signIn() {
         window.location = "/registration/sign_in/";
     }
@@ -35,12 +27,13 @@ export function HomePage(props) {
     useEffect(() => {
         isLoggedIn();
     }, []); // run once upon startup 
+
 	return (
 		<>
             <div className='navigation-bar-container'>
-                <Link className='button' to="/profile/">Profile</Link>  {/* CAN ONLY USE A LINK TAG IN A COMPONENT THAT IS PART OF THE ROUTER*/}
+                <Link className='button' to="/profile/">Profile</Link> 
                 <h1> Autobuild Website </h1>
-                <button className='button' onClick={loggedIn ? logout : signIn}>{loggedIn ? "logout" : "sign in"}</button>
+                <button className='button' onClick={isLoggedIn ? logout : signIn}>{isLoggedIn ? "logout" : "sign in"}</button>
             </div>
             {Posts(props, false)}
         </>

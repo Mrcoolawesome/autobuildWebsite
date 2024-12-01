@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
@@ -11,7 +10,6 @@ import { IndividualPost } from './post.jsx';
 
 function Root() { // made our own function so we could use hooks
 	const [posts, setPosts] = useState([]);
-	const [loggedIn, setLoggedIn] = useState(false);
 
 	const router = createHashRouter([ // sort of like urls.py for django
 		{
@@ -20,24 +18,24 @@ function Root() { // made our own function so we could use hooks
 			children: [
 				{
 					path: "/",
-					element: <HomePage setPosts={setPosts} posts={posts} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>,
+					element: <HomePage setPosts={setPosts} posts={posts} />,
 				},
-		  {
-			path: "/profile/",
-			element: <Profile setPosts={setPosts} posts={posts}/>,
-		  },
-		  {
-			path: "/createPost/",
-			element: <NewPost setPosts={setPosts} posts={posts} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />,
-		  },
-		  {
-			path: "/post/:id",
-			element: <IndividualPost personalPost={false} />,
-		  },
-		  {
-			path: "/post/edit/:id",
-			element: <NewPost setPosts={setPosts} posts={posts} personalPost={true} />,
-		  }
+				{
+					path: "/profile/",
+					element: <Profile setPosts={setPosts} posts={posts}/>,
+				},
+				{
+					path: "/createPost/",
+					element: <NewPost setPosts={setPosts} posts={posts} />,
+				},
+				{
+					path: "/post/:id",
+					element: <IndividualPost personalPost={false} />,
+				},
+				{
+					path: "/post/edit/:id",
+					element: <NewPost setPosts={setPosts} posts={posts} personalPost={true} />,
+				}
 			]
 		},
 	]);

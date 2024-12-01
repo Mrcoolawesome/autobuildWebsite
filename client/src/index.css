@@ -21,7 +21,6 @@ body {
   color: #333;
 }
 
-/* Navigation bar container */
 .navigation-bar-container {
   background-color: #4caf50;
   color: white;
@@ -53,7 +52,6 @@ body {
   color: white;
 }
 
-/* Posts container */
 .posts-container {
   margin: 2rem auto;
   max-width: 800px;
@@ -66,7 +64,7 @@ body {
 
 .thumbnail {
   width: 200px;
-  height: auto; /* Maintains aspect ratio */
+  height: auto;
 }
 
 .vehicle-view {
@@ -90,7 +88,6 @@ body {
   color: white;
 }
 
-/* New Post Form */
 .new-post-form {
   background-color: white;
   margin: 2rem auto;
@@ -146,7 +143,6 @@ body {
   background-color: #45a049;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
   .navigation-bar-container {
     flex-direction: column;
@@ -159,7 +155,6 @@ body {
   }
 }
 
-/* Posts Container */
 .posts-container {
   margin: 2rem auto;
   max-width: 800px;
@@ -181,7 +176,6 @@ body {
   align-items: flex-start;
 }
 
-/* Individual Post */
 .single-post {
   background-color: white;
   border-radius: 8px;
@@ -211,7 +205,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Loading Indicator */
 .posts-container > div {
   text-align: center;
   font-size: 1.5rem;
@@ -219,7 +212,6 @@ body {
   font-weight: 500;
 }
 
-/* Link Styling */
 .posts-container a {
   text-decoration: none;
   color: inherit;

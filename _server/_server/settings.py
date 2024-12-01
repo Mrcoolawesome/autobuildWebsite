@@ -132,6 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = "/registration/sign_in/"
 
-MEDIA_ROOT = BASE_DIR / '../client/thumbnails/' # save so react can see it
+MEDIA_ROOT = BASE_DIR / '../client/thumbnails/' # save to a folder where react can see it
 
-MEDIA_URL = "thumbnails/" # this is a builtin view WILL NOT WORK FOR PRODUCTION https://docs.djangoproject.com/en/5.1/howto/static-files/deployment/
+MEDIA_URL = "thumbnails/" # https://docs.djangoproject.com/en/5.1/howto/static-files/deployment/

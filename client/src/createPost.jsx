@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom"; // these are hooks
 import { parse } from "cookie";
-import { isLoggedIn } from './loggingIn';
+import { isLoggedIn, signIn } from './loggingIn';
 
 // will create a form that a user can submit to create a new post
 export function NewPost(props) {
@@ -13,10 +13,11 @@ export function NewPost(props) {
     const [vehicle, setVehicle] = useState("");
     const isPersonalPost = props.personalPost;
     const { id } = useParams();
+    const [loggedIn, setLoggedIn] = useState(false);
 
     // this is what sends the post to the db
     async function createPost(e) {
-        checkSignedIn(); // making sure they're still signed in
+        checkSignedIn(loggedIn); // making sure they're still signed in
         e.preventDefault(); // don't reload page
         const formData = new FormData(); // different way of sending form data, allows for sending images
         formData.append('title', title);
@@ -65,16 +66,21 @@ export function NewPost(props) {
         setIsPublic(post.isPublic);
     }
 
-    // send the user to the sign in page if they're not already signed in
-    function checkSignedIn() {
-        if (!isLoggedIn) {
-            window.location = '/registration/sign_in/';
+    function checkSignedIn(status) {
+        if (status === false) {
+            signIn();
         }
     }
 
     useEffect(() => {
+        // have to do this weird stuff to get the right value from the async 'isLoggedIn' function
+        const getLogin = async () => {
+            const status = await isLoggedIn();
+            setLoggedIn(status);
+            checkSignedIn(status);
+        };
+        getLogin();
         if (isPersonalPost && id) {
-            checkSignedIn(); // check if the user is signed in before allowing them to create a post
             getPost();
         }
     }, []); // run once upon startup 
